@@ -31,3 +31,7 @@ jobs:
       - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
+          - name: Setup Node.js
+  uses: actions/setup-node@v4
+  with:
+    node-version: '18'
