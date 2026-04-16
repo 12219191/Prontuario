@@ -1,0 +1,44 @@
+.shell { min-height: 100vh; }
+.header { position: sticky; top: 0; z-index: 20; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 18px 24px; border-bottom: 1px solid var(--line); backdrop-filter: blur(18px); background: rgba(246, 243, 236, 0.86); }
+.workspace { display: grid; grid-template-columns: 280px minmax(0, 1fr) 320px; gap: 20px; padding: 24px; }
+.card,.sidebar,.surface,.contextCard,.metricCard,.panelCard,.formCard,.mediaCard { background: var(--surface); border: 1px solid rgba(255,255,255,.55); box-shadow: var(--shadow); border-radius: var(--radius); backdrop-filter: blur(18px); }
+.card,.surface,.contextCard,.metricCard,.panelCard,.formCard,.mediaCard { padding: 18px; }
+.sidebar { padding: 24px 18px; position: sticky; top: 118px; align-self: start; }
+.eyebrow { margin: 0 0 6px; font-size: .76rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--primary); }
+.muted { color: var(--text-soft); }
+.title { margin: 0; font-size: 1.5rem; }
+.headerRow,.topbar,.split,.toolbar,.inline { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
+.badges,.chips,.toolbar,.actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.badge,.chip,.status { display: inline-flex; align-items: center; border-radius: 999px; padding: 6px 10px; font-size: .82rem; font-weight: 600; background: var(--primary-soft); color: var(--primary); }
+.danger { background: var(--danger-soft); color: var(--danger); }
+.warning { background: var(--warning-soft); color: var(--warning); }
+.nav { display: flex; flex-direction: column; gap: 8px; margin-top: 24px; }
+.navButton { width: 100%; padding: 12px 14px; border-radius: 18px; border: 1px solid transparent; background: transparent; text-align: left; color: var(--text); cursor: pointer; }
+.navButtonActive { background: rgba(255,255,255,.68); border-color: var(--line); }
+.surface { min-width: 0; }
+.stack { display: flex; flex-direction: column; gap: 16px; }
+.hero { display: grid; grid-template-columns: minmax(0,1.1fr) minmax(280px,.9fr); gap: 16px; }
+.grid3 { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; }
+.grid2 { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.input,.textarea,.select { width: 100%; border: 1px solid var(--line); border-radius: 16px; padding: 12px 14px; background: rgba(255,255,255,.72); color: var(--text); }
+.textarea { min-height: 108px; resize: vertical; }
+.button,.ghostButton,.secondaryButton { border-radius: 16px; padding: 10px 14px; cursor: pointer; border: 1px solid transparent; }
+.button { background: var(--primary); color: #f5fff8; }
+.secondaryButton { background: rgba(31,47,40,.08); color: var(--text); }
+.ghostButton { background: transparent; color: var(--text-soft); border-color: var(--line); }
+.timeline { display: flex; flex-direction: column; gap: 12px; }
+.timelineItem { display: grid; grid-template-columns: 18px minmax(0,1fr); gap: 12px; }
+.timelineDot { width: 18px; height: 18px; margin-top: 8px; border-radius: 999px; background: var(--primary); box-shadow: 0 0 0 4px rgba(29,122,98,.16); }
+.timelineBody { padding: 16px; border-radius: 18px; border: 1px solid var(--line); background: rgba(255,255,255,.56); }
+.photoGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px,1fr)); gap: 12px; }
+.photo { width: 100%; height: 190px; object-fit: cover; border-radius: 18px; }
+.context { position: sticky; top: 118px; align-self: start; }
+.list { margin: 0; padding-left: 18px; }
+.disabledBlock { opacity: .6; pointer-events: none; }
+.roleBox { padding: 12px 14px; border-radius: 18px; background: rgba(31,47,40,.06); }
+.codeBox { padding: 12px; border-radius: 16px; background: rgba(29,122,98,.08); }
+.mono { font-family: Consolas, monospace; word-break: break-all; }
+.qrImage { width: 180px; height: 180px; border-radius: 16px; background: white; border: 1px solid var(--line); }
+@media (max-width: 1200px) { .workspace { grid-template-columns: 250px minmax(0,1fr); } .context { grid-column: 1 / -1; position: static; } }
+@media (max-width: 900px) { .header,.workspace,.hero,.grid3,.grid2 { grid-template-columns: 1fr; } .sidebar { position: static; } }

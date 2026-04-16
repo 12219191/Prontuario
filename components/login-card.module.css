@@ -1,0 +1,91 @@
+.wrap {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.card {
+  width: min(520px, 100%);
+  padding: 28px;
+  border-radius: 28px;
+  background: rgba(255, 250, 242, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 20px 50px rgba(31, 47, 40, 0.1);
+}
+
+.eyebrow {
+  margin: 0 0 6px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--primary);
+}
+
+.title {
+  margin: 0 0 8px;
+  font-size: 2rem;
+}
+
+.muted {
+  color: var(--text-soft);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 20px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.input {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.76);
+}
+
+.button {
+  border: 0;
+  border-radius: 16px;
+  padding: 12px 14px;
+  background: var(--primary);
+  color: #f5fff8;
+  cursor: pointer;
+}
+
+.demo {
+  margin-top: 18px;
+  padding: 14px;
+  border-radius: 18px;
+  background: rgba(31, 47, 40, 0.05);
+}
+
+.linkButton {
+  align-self: flex-start;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--primary);
+  cursor: pointer;
+}
+
+.tokenBox {
+  margin-top: 14px;
+  padding: 12px;
+  border-radius: 16px;
+  background: rgba(29, 122, 98, 0.08);
+}
+
+.mono {
+  font-family: Consolas, monospace;
+  word-break: break-all;
+}

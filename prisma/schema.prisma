@@ -1,0 +1,307 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+enum UserRole {
+  RECEPTION
+  CLINICAL_ASSISTANT
+  CLINICIAN
+  ADMIN
+}
+
+enum AppointmentStatus {
+  SCHEDULED
+  IN_PROGRESS
+  DRAFT
+  PENDING_DOCUMENTATION
+  COMPLETED
+  CLOSED
+  CANCELLED
+}
+
+enum TimelineEventType {
+  CONSULTATION
+  EVOLUTION
+  EXAM
+  PHOTO
+  PROCEDURE
+  PRESCRIPTION
+  DOCUMENT
+  CONSENT
+  DISCHARGE
+  RETURN
+  OPERATIONAL_NOTE
+}
+
+enum MediaContext {
+  PHYSICAL_EXAM
+  EVOLUTION
+  PROCEDURE
+  COMPARISON
+  SUPPORTING_DOCUMENT
+}
+
+model Professional {
+  id             String         @id @default(cuid())
+  name           String
+  email          String         @unique
+  passwordHash   String
+  failedLoginCount Int          @default(0)
+  lockedUntil    DateTime?
+  mfaEnabled     Boolean        @default(false)
+  mfaSecret      String?
+  recoveryCodes  String?
+  role           UserRole
+  specialty      String?
+  phone          String?
+  createdAt      DateTime       @default(now())
+  appointments   Appointment[]
+  mediaUploads   ClinicalMedia[]
+  consentActions Consent[]
+  auditEntries   AuditTrail[]
+  sessions       Session[]
+  passwordResets PasswordResetToken[]
+  loginChallenges LoginChallenge[]
+}
+
+model Patient {
+  id                 String           @id @default(cuid())
+  code               String           @unique
+  fullName           String
+  age                Int
+  sex                String
+  phone              String
+  paymentModel       String
+  treatmentStatus    String
+  chiefComplaint     String
+  allergies          String
+  alerts             String
+  tags               String
+  lastVisitAt        DateTime?
+  nextVisitAt        DateTime?
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+  appointments       Appointment[]
+  media              ClinicalMedia[]
+  consents           Consent[]
+  exams              PatientExam[]
+  prescriptions      Prescription[]
+  procedures         Procedure[]
+  clinicalDocuments  ClinicalDocument[]
+  timelineEvents     TimelineEvent[]
+  auditEntries       AuditTrail[]
+}
+
+model Appointment {
+  id                    String             @id @default(cuid())
+  patientId             String
+  professionalId        String
+  source                String
+  status                AppointmentStatus
+  specialty             String
+  financialContext      String?
+  scheduledAt           DateTime
+  anamnesisChiefComplaint String?
+  anamnesisHistory      String?
+  systemsReview         String?
+  personalHistory       String?
+  familyHistory         String?
+  habitsContext         String?
+  bloodPressure         String?
+  heartRate             String?
+  weight                String?
+  height                String?
+  physicalExamFindings  String?
+  skinExamFindings      String?
+  additionalExamNotes   String?
+  diagnosticHypotheses  String?
+  mainDiagnosis         String?
+  associatedDiagnoses   String?
+  diagnosticNotes       String?
+  prescriptionPlan      String?
+  procedurePlan         String?
+  guidancePlan          String?
+  referralPlan          String?
+  finalGuidance         String?
+  returnSuggestion      String?
+  dischargeType         String?
+  summary               String?
+  createdAt             DateTime           @default(now())
+  updatedAt             DateTime           @updatedAt
+  patient               Patient            @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  professional          Professional       @relation(fields: [professionalId], references: [id], onDelete: Restrict)
+  timelineEvents        TimelineEvent[]
+  media                 ClinicalMedia[]
+  consents              Consent[]
+  exams                 PatientExam[]
+  prescriptions         Prescription[]
+  procedures            Procedure[]
+  clinicalDocuments     ClinicalDocument[]
+  auditEntries          AuditTrail[]
+}
+
+model TimelineEvent {
+  id             String            @id @default(cuid())
+  patientId      String
+  appointmentId  String?
+  type           TimelineEventType
+  title          String
+  description    String
+  eventAt        DateTime
+  professional   String
+  treatmentLabel String?
+  createdAt      DateTime          @default(now())
+  patient        Patient           @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  appointment    Appointment?      @relation(fields: [appointmentId], references: [id], onDelete: SetNull)
+}
+
+model ClinicalMedia {
+  id              String        @id @default(cuid())
+  patientId       String
+  appointmentId   String?
+  uploadedById    String
+  title           String
+  caption         String
+  treatmentLabel  String?
+  context         MediaContext
+  imageUrl        String
+  consentRequired Boolean       @default(true)
+  consentLinked   Boolean       @default(false)
+  createdAt       DateTime      @default(now())
+  patient         Patient       @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  appointment     Appointment?  @relation(fields: [appointmentId], references: [id], onDelete: SetNull)
+  uploadedBy      Professional  @relation(fields: [uploadedById], references: [id], onDelete: Restrict)
+}
+
+model Consent {
+  id             String        @id @default(cuid())
+  patientId      String
+  appointmentId  String?
+  professionalId String
+  type           String
+  version        String
+  linkedTo       String
+  status         String
+  validUntil     DateTime?
+  signedAt       DateTime
+  createdAt      DateTime      @default(now())
+  patient        Patient       @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  appointment    Appointment?  @relation(fields: [appointmentId], references: [id], onDelete: SetNull)
+  professional   Professional  @relation(fields: [professionalId], references: [id], onDelete: Restrict)
+}
+
+model PatientExam {
+  id             String        @id @default(cuid())
+  patientId      String
+  appointmentId  String?
+  type           String
+  origin         String
+  resultSummary  String
+  clinicalNote   String
+  fileUrl        String?
+  examDate       DateTime
+  createdAt      DateTime      @default(now())
+  patient        Patient       @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  appointment    Appointment?  @relation(fields: [appointmentId], references: [id], onDelete: SetNull)
+}
+
+model Prescription {
+  id             String        @id @default(cuid())
+  patientId      String
+  appointmentId  String?
+  name           String
+  dosage         String
+  startedAt      DateTime
+  notes          String?
+  createdAt      DateTime      @default(now())
+  patient        Patient       @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  appointment    Appointment?  @relation(fields: [appointmentId], references: [id], onDelete: SetNull)
+}
+
+model Procedure {
+  id             String        @id @default(cuid())
+  patientId      String
+  appointmentId  String?
+  name           String
+  area           String
+  notes          String?
+  financialLink  String?
+  performedAt    DateTime
+  createdAt      DateTime      @default(now())
+  patient        Patient       @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  appointment    Appointment?  @relation(fields: [appointmentId], references: [id], onDelete: SetNull)
+}
+
+model ClinicalDocument {
+  id             String        @id @default(cuid())
+  patientId      String
+  appointmentId  String?
+  title          String
+  type           String
+  fileUrl        String?
+  createdAt      DateTime      @default(now())
+  patient        Patient       @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  appointment    Appointment?  @relation(fields: [appointmentId], references: [id], onDelete: SetNull)
+}
+
+model AuditTrail {
+  id              String        @id @default(cuid())
+  patientId       String?
+  appointmentId   String?
+  actorId         String?
+  entityName      String
+  fieldName       String
+  previousValue   String?
+  nextValue       String?
+  createdAt       DateTime      @default(now())
+  patient         Patient?      @relation(fields: [patientId], references: [id], onDelete: SetNull)
+  appointment     Appointment?  @relation(fields: [appointmentId], references: [id], onDelete: SetNull)
+  actor           Professional? @relation(fields: [actorId], references: [id], onDelete: SetNull)
+}
+
+model Session {
+  id             String       @id @default(cuid())
+  token          String       @unique
+  professionalId String
+  expiresAt      DateTime
+  lastUsedAt     DateTime     @default(now())
+  createdAt      DateTime     @default(now())
+  professional   Professional @relation(fields: [professionalId], references: [id], onDelete: Cascade)
+}
+
+model PasswordResetToken {
+  id             String       @id @default(cuid())
+  token          String       @unique
+  professionalId String
+  expiresAt      DateTime
+  usedAt         DateTime?
+  createdAt      DateTime     @default(now())
+  professional   Professional @relation(fields: [professionalId], references: [id], onDelete: Cascade)
+}
+
+model AuthRateLimit {
+  id          String   @id @default(cuid())
+  scope       String
+  ip          String
+  hits        Int      @default(0)
+  windowStart DateTime
+  blockedUntil DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([scope, ip])
+}
+
+model LoginChallenge {
+  id             String       @id @default(cuid())
+  token          String       @unique
+  professionalId String
+  expiresAt      DateTime
+  createdAt      DateTime     @default(now())
+  professional   Professional @relation(fields: [professionalId], references: [id], onDelete: Cascade)
+}
